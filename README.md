@@ -105,6 +105,10 @@ ou
   "result": null
 }
 ```
+### Design
+A aplicação ``integration-open-weather-background`` é responsável apenas por realizar a integração com a https://openweathermap.org/, ela é uma aplicação
+que executa somente [celery] e se comunica pelo broker [redis].
+Já a aplicação ``weather-forecast-api`` executa uma api rest e roda um worker do celery em background para receber atualizações das consultas de previsão do tempo. 
 
 
    [gunicorn]: <https://github.com/joemccann/dillinger.git>
