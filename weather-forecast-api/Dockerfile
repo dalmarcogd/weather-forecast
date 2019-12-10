@@ -31,6 +31,8 @@ RUN apt-get remove --purge -y \
 
 ADD . .
 
-EXPOSE 80
+EXPOSE 8000
 
-ENTRYPOINT gunicorn src.app:app -c ./src/gunicorn.py
+ENTRYPOINT gunicorn weather_forecast.app:app -c ./weather_forecast/gunicorn.py & \
+           celery worker -A weather_forecast.app.app_celery -l info -P gevent -n weather-forecast-worker@%n --autoscale=20,10 -Q weather-forecast
+

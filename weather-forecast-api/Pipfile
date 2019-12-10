@@ -6,9 +6,11 @@ verify_ssl = true
 
 [packages]
 celery = "*"
+gevent = "*"
 fastapi = "*"
 gunicorn = "*"
 pydantic = "*"
+kombu = "<4.6.4"
 uvicorn = "*"
 psycopg2-binary = "*"
 SQLAlchemy = "*"

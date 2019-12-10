@@ -41,4 +41,4 @@ RUN apt-get remove --purge -y \
 
 ADD . .
 
-ENTRYPOINT celery worker -A src.app.app -l info -P gevent -n integration-open-weather-worker@%n --autoscale=20,10 -Q integration-open-weather
+ENTRYPOINT celery worker -A integration_open_weather.app.app -l info -P gevent -n integration-open-weather-worker@%n --autoscale=20,10 -Q integration-open-weather

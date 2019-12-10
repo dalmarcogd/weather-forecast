@@ -1,40 +1,66 @@
 version: '3.7'
 
+networks:
+  weather:
+
+volumes:
+  postgres_data:
+    driver: local
 
 services:
   postgres:
+    container_name: postgres_weather_forecast
     image: postgres:latest
-    expose:
-      - 5434
     ports:
-      - "5434:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgreSQL
-    restart: always
     environment:
       POSTGRES_ROOT_PASSWORD: postgres
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - weather
 
   redis:
-    container_name: redis
+    container_name: redis_weather_forecast
     image: redis
-    expose:
-      - 6379
     ports:
-      - "6379:6379"
+      - "6380:6379"
+    depends_on:
+      - postgres
     networks:
       - weather
 
-networks:
-  weather:
-    driver: bridge
+  weather-forecast-api:
+    image: weather_forecast_api
+    build:
+      context: ./weather-forecast-api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - weather-forecast-api/.env.test
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - weather
 
-volumes:
-  rabbitmq_data:
-    driver: local
-  postgres_data:
-    driver: local
+  integration-open-weather:
+    image: integration_open_weather
+    build:
+      context: ./integration-open-weather-background
+      dockerfile: Dockerfile
+    env_file:
+      - integration-open-weather-background/.env.test
+    networks:
+      - weather
+    depends_on:
+      - redis
