@@ -40,5 +40,5 @@ async def get(weather_forecast_id: UUID):
     return {
         "id": weather_forecast["id"],
         "status": weather_forecast["status"],
-        "result": ujson.loads(weather_forecast["result"]),
+        "result": ujson.loads(weather_forecast["result"]) if weather_forecast["result"] else None,
     }
