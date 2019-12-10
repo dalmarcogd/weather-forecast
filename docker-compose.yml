@@ -1,0 +1,40 @@
+version: '3.7'
+
+
+services:
+  postgres:
+    image: postgres:latest
+    expose:
+      - 5434
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgreSQL
+    restart: always
+    environment:
+      POSTGRES_ROOT_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - weather
+
+  redis:
+    container_name: redis
+    image: redis
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+    networks:
+      - weather
+
+networks:
+  weather:
+    driver: bridge
+
+volumes:
+  rabbitmq_data:
+    driver: local
+  postgres_data:
+    driver: local

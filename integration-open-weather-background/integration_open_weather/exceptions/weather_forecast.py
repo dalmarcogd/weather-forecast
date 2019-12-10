@@ -1,0 +1,2 @@
+class WeatherForecastRequiredParams(Exception):
+    pass
